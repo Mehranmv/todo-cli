@@ -45,7 +45,7 @@ def list():
     """
     print("[bold white]Todos List :[/bold white]")
     todos = (
-        db.query(Todo).filter(Todo.is_completed != True, Todo.is_deleted != False).all()
+        db.query(Todo).filter(Todo.is_completed != True, Todo.is_deleted != True).all()
     )
     table = Table("Id", "Title", "Body", "Priority", "In Progress")
     for todo in todos:
@@ -73,7 +73,7 @@ def list_all():
     """
     list_all : Getting list of all todos (new, in progress, completed)
     """
-    todos = db.query(Todo).filter(Todo.is_deleted != False).all()
+    todos = db.query(Todo).filter(Todo.is_deleted != True).all()
     table = Table("Id", "Title", "Body", "Priority", "In Progress", "Completed")
     for todo in todos:
         if todo.is_in_progress:
@@ -210,7 +210,7 @@ def delete_all(
         bool, typer.Option(prompt="Are you sure you want to delete all todos?")
     ],
 ):
-    todos = db.query(Todo).first()
+    todos = db.query(Todo).all()
     if force:
         for todo in todos:
             todo.is_deleted = True
