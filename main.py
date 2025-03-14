@@ -47,9 +47,9 @@ def list():
     table = Table("Id", "Title", "Body", "Priority", "In Progress")
     for todo in todos:
         row_style = "green" if todo.is_in_progress else "white"
-        if todo.priority == 1:
+        if todo.priority == "LOW":
             priority_color = "yellow"
-        elif todo.priority == 2:
+        elif todo.priority == "MEDIUM":
             priority_color = "blue"
         else:
             priority_color = "purple"
@@ -80,9 +80,9 @@ def list_all():
             row_style = "yellow"
         else:
             row_style = "white"
-        if todo.priority == 1:
+        if todo.priority == "LOW":
             priority_color = "yellow"
-        elif todo.priority == 2:
+        elif todo.priority == "MEDIUM":
             priority_color = "blue"
         else:
             priority_color = "purple"
