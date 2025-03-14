@@ -24,6 +24,7 @@ def get_db():
 
 
 db = next(get_db())
+# db = Annotated[session, get_db]
 
 
 class Priority(str, Enum):
@@ -63,7 +64,6 @@ def list():
         )
     table.caption = "[red]in progress todo's are in green[/red]"
     console.print(table)
-    db.close()
 
 
 @app.command(help="Getting list of all todos (new, in progress, completed)")
@@ -71,7 +71,7 @@ def list_all():
     """
     list_all : Getting list of all todos (new, in progress, completed)
     """
-    todos = db.query(Todo).filter(Todo.is_completed != True).all()
+    todos = db.query(Todo).all()
     table = Table("Id", "Title", "Body", "Priority", "In Progress", "Completed")
     for todo in todos:
         if todo.is_in_progress:
@@ -98,7 +98,6 @@ def list_all():
         )
     table.caption = "[green]in progress todos are in green[/green] \n[red]completed todos are in red[/red]"
     console.print(table)
-    db.close()
 
 
 @app.command(help="Adding a todo")
@@ -138,8 +137,44 @@ def add():
     # Add to the database
     db.add(todo)
     db.commit()
-    db.close()
     print("[bold green]Todo added successfully![/bold green]")
+
+
+@app.command(help="Updating a todo that todo is 'in progress' or 'completed'")
+def update(
+    todo_id: int,
+):
+    todo = db.query(Todo).filter(Todo.id == todo_id).first()
+    if not todo:
+        print("[red bold]Todo not found![/red bold]")
+        return
+    list()
+    while True:
+        is_in_progress = (
+            Prompt.ask("[bold green]Is todo in progress (1.True/0.False)?[/bold green]")
+            .strip()
+            .lower()
+        )  # Normalize input
+        if is_in_progress in ["1", "0"]:
+            todo.is_in_progress = is_in_progress == "true"  # Convert to boolean
+            break
+        print("[bold red]Invalid input! Please enter 'True' or 'False'.[/bold red]")
+
+    while True:
+        is_completed = (
+            Prompt.ask("[bold yellow]Is todo completed (1.True/0.False)?[/bold yellow]")
+            .strip()
+            .lower()
+        )  # Normalize input
+        if is_completed in ["1", "0"]:
+            todo.is_completed = is_completed == "true"  # Convert to boolean
+            break
+        print("[bold red]Invalid input! Please enter 'True' or 'False'.[/bold red]")
+
+    todo.is_in_progress = bool(int(is_in_progress))
+    todo.is_completed = bool(int(is_completed))
+    db.commit()
+    print("Todo updated successfully!")
 
 
 if __name__ == "__main__":
