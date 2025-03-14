@@ -13,3 +13,4 @@ class Todo(Base):
     is_in_progress = Column(Boolean, default=False)
     is_completed = Column(Boolean, default=False)
     complete_time = Column(DateTime(timezone=True))
+    is_deleted = Column(Boolean, default=False)

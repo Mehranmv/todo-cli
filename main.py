@@ -10,6 +10,7 @@ from rich.table import Table
 from rich.console import Console
 from rich.prompt import Prompt
 from enum import Enum
+from typing import Annotated
 
 app = typer.Typer()
 console = Console()
@@ -44,7 +45,9 @@ def list():
     Display a list of todos that are not completed.
     """
     print("[bold white]Todos List :[/bold white]")
-    todos = db.query(Todo).filter(Todo.is_completed != True).all()
+    todos = (
+        db.query(Todo).filter(Todo.is_completed != True, Todo.is_deleted != False).all()
+    )
     table = Table("Id", "Title", "Body", "Priority", "In Progress")
     for todo in todos:
         row_style = "green" if todo.is_in_progress else "white"
@@ -71,7 +74,7 @@ def list_all():
     """
     list_all : Getting list of all todos (new, in progress, completed)
     """
-    todos = db.query(Todo).all()
+    todos = db.query(Todo).filter(Todo.is_deleted != False).all()
     table = Table("Id", "Title", "Body", "Priority", "In Progress", "Completed")
     for todo in todos:
         if todo.is_in_progress:
@@ -138,10 +141,11 @@ def add():
     db.add(todo)
     db.commit()
     print("[bold green]Todo added successfully![/bold green]")
+    list()
 
 
-@app.command(help="Updating a todo that todo is 'in progress' or 'completed'")
-def update(
+@app.command(name="progress", help="Updating a todo that todo is 'in progress'")
+def add_to_in_progress(
     todo_id: int,
 ):
     todo = db.query(Todo).filter(Todo.id == todo_id).first()
@@ -149,6 +153,7 @@ def update(
         print("[red bold]Todo not found![/red bold]")
         return
     list()
+
     while True:
         is_in_progress = (
             Prompt.ask("[bold green]Is todo in progress (1.True/0.False)?[/bold green]")
@@ -160,6 +165,18 @@ def update(
             break
         print("[bold red]Invalid input! Please enter 'True' or 'False'.[/bold red]")
 
+    todo.is_in_progress = bool(int(is_in_progress))
+    db.commit()
+    print("[green bold]Todo added to in progress todos successfully![/green bold]")
+    list()
+
+
+@app.command(name="completed")
+def get_in_completed(todo_id: int):
+    todo = db.query(Todo).filter(Todo.id == todo_id).first()
+    if not todo:
+        print("[red bold]Todo not found![/red bold]")
+        return
     while True:
         is_completed = (
             Prompt.ask("[bold yellow]Is todo completed (1.True/0.False)?[/bold yellow]")
@@ -171,10 +188,67 @@ def update(
             break
         print("[bold red]Invalid input! Please enter 'True' or 'False'.[/bold red]")
 
-    todo.is_in_progress = bool(int(is_in_progress))
-    todo.is_completed = bool(int(is_completed))
+        todo.is_in_progress = bool(int(is_completed))
+        print("[green bold]Todo added to completed todos successfully![/green bold]")
+        list()
+
+
+@app.command(help="Delete a todo from app")
+def delete(todo_id: int):
+    todo = db.query(Todo).filter(Todo.id == todo_id).first()
+    if not todo:
+        print("[red bold]Todo not found![/red bold]")
+        return
+    todo.is_deleted = True
     db.commit()
-    print("Todo updated successfully!")
+    print("[green bold] Todo deleted successfully [/green bold]")
+    list()
+
+
+@app.command(help="Delete a todo from app")
+def delete_all(
+    force: Annotated[
+        bool, typer.Option(prompt="Are you sure you want to delete all todos?")
+    ],
+):
+    todos = db.query(Todo).first()
+    if force:
+        for todo in todos:
+            todo.is_deleted = True
+        db.commit()
+        print("[green bold] Todos deleted successfully [/green bold]")
+        list()
+
+
+@app.command(help="Get history off all todos (include deleted todos)")
+def history():
+    todos = db.query(Todo).all()
+    table = Table("Id", "Title", "Body", "Priority", "In Progress", "Completed")
+    for todo in todos:
+        if todo.is_in_progress:
+            row_style = "green"
+        elif todo.is_completed:
+            row_style = "yellow"
+        else:
+            row_style = "white"
+        if todo.priority == "LOW":
+            priority_color = "yellow"
+        elif todo.priority == "MEDIUM":
+            priority_color = "blue"
+        else:
+            priority_color = "purple"
+
+        table.add_row(
+            str(todo.id),
+            todo.title,
+            todo.todo_body,
+            f"[{priority_color}]{todo.priority}[/{priority_color}]",
+            ":heavy_check_mark:" if todo.is_in_progress else ":x:",
+            ":heavy_check_mark:" if todo.is_completed else ":x:",
+            style=row_style,
+        )
+    table.caption = "[green]in progress todos are in green[/green] \n[red]completed todos are in red[/red]"
+    console.print(table)
 
 
 if __name__ == "__main__":
