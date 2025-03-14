@@ -25,7 +25,6 @@ def get_db():
 
 
 db = next(get_db())
-# db = Annotated[session, get_db]
 
 
 class Priority(str, Enum):
@@ -159,9 +158,9 @@ def add_to_in_progress(
             Prompt.ask("[bold green]Is todo in progress (1.True/0.False)?[/bold green]")
             .strip()
             .lower()
-        )  # Normalize input
+        ) 
         if is_in_progress in ["1", "0"]:
-            todo.is_in_progress = is_in_progress == "true"  # Convert to boolean
+            todo.is_in_progress = is_in_progress == "true"
             break
         print("[bold red]Invalid input! Please enter 'True' or 'False'.[/bold red]")
 
@@ -182,9 +181,9 @@ def get_in_completed(todo_id: int):
             Prompt.ask("[bold yellow]Is todo completed (1.True/0.False)?[/bold yellow]")
             .strip()
             .lower()
-        )  # Normalize input
+        ) 
         if is_completed in ["1", "0"]:
-            todo.is_completed = is_completed == "true"  # Convert to boolean
+            todo.is_completed = is_completed == "true"
             break
         print("[bold red]Invalid input! Please enter 'True' or 'False'.[/bold red]")
 
