@@ -9,7 +9,7 @@ class Todo(Base):
     updated_at = Column(DateTime(timezone=True))
     title = Column(String)
     todo_body = Column(String)
-    priority = Column(Integer)
+    priority = Column(String)
     is_in_progress = Column(Boolean, default=False)
     is_completed = Column(Boolean, default=False)
     complete_time = Column(DateTime(timezone=True))
