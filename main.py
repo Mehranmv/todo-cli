@@ -23,8 +23,11 @@ def get_db():
 db = next(get_db())
 
 
-def main():
-    print("[bold green]Welcome To [red]TODO APP[/red][/bold green]")
+@app.command(help="Display a list of todos that are not completed.")
+def list():
+    """
+    Display a list of todos that are not completed.
+    """
     print("[bold white]Todos List :[/bold white]")
     todos = db.query(Todo).filter(Todo.is_completed != True).all()
     table = Table("id", "title", "body", "priority", "in progress")
@@ -35,12 +38,39 @@ def main():
             todo.title,
             todo.todo_body,
             todo.priority,
-            str(todo.is_in_progress),
+            ":heavy_check_mark:" if todo.is_in_progress else ":x:",
             style=row_style,
         )
     table.caption = "[red]in progress todo's are in green[/red]"
     console.print(table)
 
 
+@app.command(help="Getting list of all todos (new, in progress, completed)")
+def list_all():
+    """
+    list_all : Getting list of all todos (new, in progress, completed)
+    """
+    todos = db.query(Todo).filter(Todo.is_completed != True).all()
+    table = Table("id", "title", "body", "priority", "in progress", "is completed")
+    for todo in todos:
+        if todo.is_in_progress:
+            row_style = "green"
+        elif todo.is_completed:
+            row_style = "yellow"
+        else:
+            row_style = "white"
+        table.add_row(
+            str(todo.id),
+            todo.title,
+            todo.todo_body,
+            todo.priority,
+            ":heavy_check_mark:" if todo.is_in_progress else ":x:",
+            ":heavy_check_mark:" if todo.is_completed else ":x:",
+            style=row_style,
+        )
+    table.caption = "[green]in progress todos are in green[/green] \n[red]completed todos are in red[/red]"
+    console.print(table)
+
+
 if __name__ == "__main__":
-    typer.run(main)
+    app()
