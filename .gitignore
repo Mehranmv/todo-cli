@@ -34,3 +34,4 @@ dist
 build
 rich_todo.egg-info
 cli_todo.egg-info
+*.db

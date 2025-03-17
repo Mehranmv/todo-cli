@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="rich-todo",
-    version="0.1.0",
+    version="0.1.1",
     packages=["todo_cli"],
     package_dir={"todo_cli": "todo_cli"},
     include_package_data=True,
