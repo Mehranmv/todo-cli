@@ -1,4 +1,6 @@
 from logging.config import fileConfig
+# Change the import to use package-relative path
+from todo_cli.database import SQLALCHEMY_DATABASE_URL
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -17,7 +19,7 @@ if config.config_file_name is not None:
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
-import models
+from todo_cli import models
 
 target_metadata = models.Base.metadata
 # target_metadata = None
@@ -40,7 +42,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = SQLALCHEMY_DATABASE_URL
     context.configure(
         url=url,
         target_metadata=target_metadata,
