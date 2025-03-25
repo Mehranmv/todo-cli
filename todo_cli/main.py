@@ -1,11 +1,13 @@
 # local imports
 from datetime import datetime
 from todo_cli.database import SessionLocal, engine, Base
-from todo_cli.models import Todo  # If you have models.py
+from todo_cli.models import Todo, Setting
+
 # Update the existing Alembic imports at the top
 from alembic.config import Config
 from alembic import command
 import os
+
 
 def run_migrations():
     # Get the package directory path
@@ -13,6 +15,7 @@ def run_migrations():
     alembic_ini_path = os.path.join(package_dir, "alembic.ini")
     alembic_cfg = Config(alembic_ini_path)
     command.upgrade(alembic_cfg, "head")
+
 
 # third party imports
 import typer
@@ -80,7 +83,7 @@ def list():
 
 
 @app.command(help="Getting list of all todos (new, in progress, completed)")
-def list_all():
+def all():
     """
     list_all : Getting list of all todos (new, in progress, completed)
     """
@@ -169,7 +172,7 @@ def add_to_in_progress(
             Prompt.ask("[bold green]Is todo in progress (1.True/0.False)?[/bold green]")
             .strip()
             .lower()
-        ) 
+        )
         if is_in_progress in ["1", "0"]:
             todo.is_in_progress = is_in_progress == "true"
             break
@@ -189,16 +192,19 @@ def get_in_completed(todo_id: int):
         return
     while True:
         is_completed = (
-            Prompt.ask("[bold yellow]Is todo completed (1.True/0.False)?[/bold yellow]")
+            Prompt.ask(
+                "[bold yellow]Is todo completed (1.True / 0.False)?[/bold yellow]"
+            )
             .strip()
             .lower()
-        ) 
-        if is_completed in ["1", "0"]:
-            todo.is_completed = is_completed == "true"
+        )
+        if int(is_completed) == 1:
+            todo.is_completed = True
+            todo.is_in_progress = False
+            db.commit()
             break
         print("[bold red]Invalid input! Please enter 'True' or 'False'.[/bold red]")
 
-        todo.is_in_progress = bool(int(is_completed))
         print("[green bold]Todo added to completed todos successfully![/green bold]")
         list()
 
@@ -215,7 +221,7 @@ def delete(todo_id: int):
     list()
 
 
-@app.command(help="Delete a todo from app")
+@app.command(help="Delete al todo from app")
 def delete_all(
     force: Annotated[
         bool, typer.Option(prompt="Are you sure you want to delete all todos?")
@@ -261,10 +267,9 @@ def history():
     console.print(table)
 
 
-
-
 def main():
     todo = db.query(Setting).first()
     if todo.is_database_migrated is None or todo.is_database_migrated is False:
         run_migrations()
+    print("CCC")
     app()
