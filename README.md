@@ -36,7 +36,7 @@ todo add
 todo list
 
 # List all todos including completed
-todo list-all
+todo all
 
 # Mark todo as in progress
 todo progress <todo_id>
