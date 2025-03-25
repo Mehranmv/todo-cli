@@ -1,7 +1,7 @@
 # Todo CLI 🚀
 
 [![Python 3.6+](https://img.shields.io/badge/Python-3.6%2B-blue.svg)](https://www.python.org/)
-[![PyPI Version](https://img.shields.io/pypi/v/todo-cli.svg)](https://pypi.org/project/todo-cli/)
+[![PyPI Version](https://img.shields.io/pypi/v/rich-todo.svg)](https://pypi.org/project/rich-todo/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/Mehranmv/todo-cli)
 A beautiful terminal-based todo manager with database persistence and rich visual feedback. Organize tasks directly from your command line with style! ✨
 
