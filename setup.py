@@ -1,15 +1,23 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="rich-todo",
-    version="0.1.2",
-    packages=["todo_cli"],
+    version="0.1.4",
+    packages=["todo_cli", "todo_cli.cli", "todo_cli.ui"],
     package_dir={"todo_cli": "todo_cli"},
     include_package_data=True,
-    install_requires=["sqlalchemy", "alembic", "typer", "rich", "platformdirs"],
+    install_requires=[
+        "sqlalchemy",
+        "alembic",
+        "typer",
+        "rich",
+        "platformdirs",
+        "ttkbootstrap",
+    ],
     entry_points={
         "console_scripts": [
-            "todo=todo_cli.main:app",
+            "todo = todo_cli.cli.main:app",
+            "todoui = todo_cli.ui.main:main",
         ],
     },
     author="Mehran Mirzaei",
