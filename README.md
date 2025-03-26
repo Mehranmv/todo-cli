@@ -3,6 +3,7 @@
 [![Python 3.6+](https://img.shields.io/badge/Python-3.6%2B-blue.svg)](https://www.python.org/)
 [![PyPI Version](https://img.shields.io/pypi/v/rich-todo.svg)](https://pypi.org/project/rich-todo/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/Mehranmv/todo-cli)
+[![PyPI Downloads](https://static.pepy.tech/badge/rich-todo)](https://pepy.tech/projects/rich-todo)
 
 A modern cross-platform task manager with **dual interface** - Beautiful GUI ✨ and powerful CLI 💻
 
