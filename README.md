@@ -51,7 +51,6 @@ todo --help
 ## UI Usage 🖱️
 
 ### Main Interface
-![Main Window](https://via.placeholder.com/600x300.png?text=Main+Interface)
 
 1. **Quick Add Bar** - Type and press Enter
 2. **Smart Filters** - Click to toggle views
@@ -79,7 +78,6 @@ todoui --primary-color #2ecc71 --accent-color #3498db
 ```
 
 ## Documentation 📚
-Explore our [UI Guide](docs/UI_GUIDE.md) for:
 - Custom view configurations
 - Notification preferences
 - Data visualization tips
