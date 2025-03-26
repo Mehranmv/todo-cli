@@ -6,7 +6,7 @@
 
 A modern cross-platform task manager with **dual interface** - Beautiful GUI ✨ and powerful CLI 💻
 
-![UI Screenshot](https://raw.githubusercontent.com/Mehranmv/todo-cli/screenshots/gui.png)
+![UI Screenshot](https://raw.githubusercontent.com/Mehranmv/todo-cli/refs/heads/master/screenshots/gui.png)
 
 ## Features 🌟
 
